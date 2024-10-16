@@ -1,25 +1,27 @@
 <?php
-    
+
 namespace App\Http\Controllers;
-    
-use App\Models\Product;
+
+use App\Http\Controllers\Controller;
+use App\Models\category;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
-    
-class ProductController extends Controller
-{ 
-    /**
+
+class categoryController extends Controller
+{
+
+     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     function __construct()
     {
-         $this->middleware('permission:product-list|product-create|product-edit|product-delete', ['only' => ['index','show']]);
-         $this->middleware('permission:product-create', ['only' => ['create','store']]);
-         $this->middleware('permission:product-edit', ['only' => ['edit','update']]);
-         $this->middleware('permission:product-delete', ['only' => ['destroy']]);
+         $this->middleware('permission:category-list|category-create|category-edit|category-delete', ['only' => ['index','show']]);
+         $this->middleware('permission:category-create', ['only' => ['create','store']]);
+         $this->middleware('permission:category-edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:category-delete', ['only' => ['destroy']]);
     }
     /**
      * Display a listing of the resource.
@@ -28,9 +30,9 @@ class ProductController extends Controller
      */
     public function index(): View
     {
-        $products = Product::latest()->paginate(5);
+        $categories = category::latest()->paginate(5);
 
-        return view('products.index',compact('products'))
+        return view('category.index',compact('categories'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
     }
     
@@ -41,7 +43,7 @@ class ProductController extends Controller
      */
     public function create(): View
     {
-        return view('products.create');
+        return view('category.create');
     }
     
     /**
@@ -57,9 +59,9 @@ class ProductController extends Controller
             'detail' => 'required',
         ]);
     
-        Product::create($request->all());
+        category::create($request->all());
     
-        return redirect()->route('products.index')
+        return redirect()->route('category.index')
                         ->with('success','Product created successfully.');
     }
     
@@ -69,9 +71,9 @@ class ProductController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product): View
+    public function show(category $category): View
     {
-        return view('products.show',compact('product'));
+        return view('category.show',compact('category'));
     }
     
     /**
@@ -80,9 +82,9 @@ class ProductController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function edit(Product $product): View
+    public function edit(category $category): View
     {
-        return view('products.edit',compact('product'));
+        return view('category.edit',compact('category'));
     }
     
     /**
@@ -92,17 +94,17 @@ class ProductController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product): RedirectResponse
+    public function update(Request $request, category $category): RedirectResponse
     {
          request()->validate([
             'name' => 'required',
             'detail' => 'required',
         ]);
     
-        $product->update($request->all());
+        $category->update($request->all());
     
-        return redirect()->route('products.index')
-                        ->with('success','Product updated successfully');
+        return redirect()->route('category.index')
+                        ->with('success','category updated successfully');
     }
     
     /**
@@ -111,11 +113,11 @@ class ProductController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product): RedirectResponse
+    public function destroy(category $category): RedirectResponse
     {
-        $product->delete();
+        $category->delete();
     
-        return redirect()->route('products.index')
-                        ->with('success','Product deleted successfully');
+        return redirect()->route('category.index')
+                        ->with('success','category deleted successfully');
     }
 }

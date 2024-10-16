@@ -13,14 +13,14 @@
 </div>
 
 @if (count($errors) > 0)
-    <div class="alert alert-danger">
-      <strong>Whoops!</strong> There were some problems with your input.<br><br>
-      <ul>
-         @foreach ($errors->all() as $error)
-           <li>{{ $error }}</li>
-         @endforeach
-      </ul>
-    </div>
+<div class="alert alert-danger">
+    <strong>Whoops!</strong> There were some problems with your input.<br><br>
+    <ul>
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
 @endif
 
 <form method="POST" action="{{ route('users.update', $user->id) }}">
@@ -55,20 +55,30 @@
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
                 <strong>Role:</strong>
-                <select name="roles[]" class="form-control" multiple="multiple">
+                <select name="roles[]" class="form-control" multiple="multiple" {{ auth()->user()->id != 1 ? 'disabled' : '' }}>
+                    <!-- Disable if the user ID is not 1 -->
                     @foreach ($roles as $value => $label)
-                        <option value="{{ $value }}" {{ isset($userRole[$value]) ? 'selected' : ''}}>
-                            {{ $label }}
-                        </option>
-                     @endforeach
+                    <option value="{{ $value }}" {{ isset($userRole[$value]) ? 'selected' : '' }}>
+                        {{ $label }}
+                    </option>
+                    @endforeach
                 </select>
+
+                <!-- Add hidden inputs for each selected role when the dropdown is disabled -->
+                @if(auth()->user()->id != 1)
+                @foreach ($userRole as $value => $role)
+                <input type="hidden" name="roles[]" value="{{ $value }}">
+                @endforeach
+                @endif
             </div>
         </div>
+
+
         <div class="col-xs-12 col-sm-12 col-md-12 text-center">
             <button type="submit" class="btn btn-primary btn-sm mt-2 mb-3"><i class="fa-solid fa-floppy-disk"></i> Submit</button>
         </div>
     </div>
 </form>
 
-<p class="text-center text-primary"><small>Tutorial by ItSolutionStuff.com</small></p>
+
 @endsection
